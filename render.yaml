@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: fuelcal
-    env: node
-    buildCommand: npm install
-    startCommand: npx expo start --web --port $PORT
-    envVars:
-      - key: NODE_ENV
-        value: production

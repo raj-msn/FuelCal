@@ -34,7 +34,8 @@ type FuelUnit = 'L/100km' | 'km/L';
 
 export default function Index() {
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  // Force dark mode by default, or follow system preference
+  const isDark = colorScheme !== 'light'; // Defaults to dark unless explicitly set to light
 
   // Refs for input fields
   const kmRef = useRef<TextInput>(null);
