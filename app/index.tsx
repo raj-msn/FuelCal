@@ -107,6 +107,18 @@ export default function Index() {
     setCurrency(prev => prev === 'AED' ? 'INR' : 'AED');
   };
 
+  // Clear all values except fuel cost and preferences
+  const clearValues = () => {
+    setKilometers('');
+    setFuelConsumption('');
+    setNumPeople('1');
+    // Clear from storage too
+    AsyncStorage.removeItem(STORAGE_KEYS.kilometers);
+    AsyncStorage.removeItem(STORAGE_KEYS.consumption);
+    AsyncStorage.removeItem(STORAGE_KEYS.people);
+    // Note: petrolCost, currency, and fuelUnit are preserved
+  };
+
   // Calculate results
   const results = useMemo(() => {
     const km = parseFloat(kilometers) || 0;
@@ -161,8 +173,7 @@ export default function Index() {
       color: isDark ? '#ffffff' : '#000000',
       borderColor: isDark ? '#3a3a3c' : '#e0e0e5',
     }
-  ];
-
+  ];453126
   const textColor = { color: isDark ? '#ffffff' : '#000000' };
   const labelColor = { color: isDark ? '#a0a0a5' : '#6e6e73' };
 
@@ -177,20 +188,28 @@ export default function Index() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Header with Currency Selector */}
+          {/* Header with Clear and Currency Buttons */}
           <View style={styles.header}>
             <View>
               <Text style={[styles.title, textColor]}>FuelCal</Text>
               <Text style={[styles.subtitle, labelColor]}>
-                @rajmsn
+                @raj_msn
               </Text>
             </View>
-            <TouchableOpacity
-              style={[styles.currencyButton, { backgroundColor: isDark ? '#2c2c2e' : '#f0f0f5' }]}
-              onPress={toggleCurrency}
-            >
-              <Text style={[styles.currencyText, textColor]}>{currencySymbol}</Text>
-            </TouchableOpacity>
+            <View style={styles.headerButtons}>
+              <TouchableOpacity
+                style={[styles.clearButton, { backgroundColor: isDark ? '#2c2c2e' : '#f0f0f5' }]}
+                onPress={clearValues}
+              >
+                <Text style={[styles.clearButtonText, labelColor]}>Clear</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.currencyButton, { backgroundColor: isDark ? '#2c2c2e' : '#f0f0f5' }]}
+                onPress={toggleCurrency}
+              >
+                <Text style={[styles.currencyText, textColor]}>{currencySymbol}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Input Card */}
@@ -205,7 +224,7 @@ export default function Index() {
                 style={inputStyle}
                 value={kilometers}
                 onChangeText={setKilometers}
-                placeholder="150"
+                placeholder="112"
                 placeholderTextColor={isDark ? '#6e6e73' : '#a0a0a5'}
                 keyboardType="decimal-pad"
                 returnKeyType="next"
@@ -376,6 +395,23 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 17,
     fontWeight: '400',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  clearButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginTop: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  clearButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   currencyButton: {
     paddingHorizontal: 16,
