@@ -105,7 +105,7 @@ export default function Index() {
 
   // Toggle currency
   const toggleCurrency = () => {
-    setCurrency(prev => prev === 'AED' ? 'INR' : 'AED');
+    setCurrency((prev: Currency) => prev === 'AED' ? 'INR' : 'AED');
   };
 
   // Clear all values except fuel cost and preferences
@@ -151,7 +151,7 @@ export default function Index() {
   }, [kilometers, fuelConsumption, petrolCost, numPeople, fuelUnit]);
 
   // Get current currency symbol
-  const currencySymbol = CURRENCY_SYMBOLS[currency];
+  const currencySymbol = CURRENCY_SYMBOLS[currency as keyof typeof CURRENCY_SYMBOLS];
 
   // Dynamic styles based on theme
   const containerStyle = [
