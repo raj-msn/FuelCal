@@ -27,7 +27,15 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "name": "FuelCal",
+      "shortName": "FuelCal",
+      "description": "Calculate and split fuel costs when carpooling",
+      "themeColor": "#000000",
+      "backgroundColor": "#000000",
+      "display": "standalone",
+      "startUrl": "/",
+      "orientation": "portrait"
     },
     "plugins": [
       "expo-router",
