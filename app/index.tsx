@@ -174,7 +174,7 @@ export default function Index() {
       color: isDark ? '#ffffff' : '#000000',
       borderColor: isDark ? '#3a3a3c' : '#e0e0e5',
     }
-  ];453126
+  ]; 453126
   const textColor = { color: isDark ? '#ffffff' : '#000000' };
   const labelColor = { color: isDark ? '#a0a0a5' : '#6e6e73' };
 
@@ -300,7 +300,7 @@ export default function Index() {
                 style={inputStyle}
                 value={petrolCost}
                 onChangeText={setPetrolCost}
-                placeholder="1.85"
+                placeholder="2.66"
                 placeholderTextColor={isDark ? '#6e6e73' : '#a0a0a5'}
                 keyboardType="decimal-pad"
                 returnKeyType="next"
