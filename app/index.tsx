@@ -32,10 +32,50 @@ const CURRENCY_SYMBOLS = {
 type Currency = 'AED' | 'INR';
 type FuelUnit = 'L/100km' | 'km/L';
 
+type ThemeMode = 'light' | 'dark' | 'system';
+
 export default function Index() {
-  const colorScheme = useColorScheme();
-  // Force dark mode by default, or follow system preference
-  const isDark = colorScheme !== 'light'; // Defaults to dark unless explicitly set to light
+  const systemColorScheme = useColorScheme();
+
+  // State for theme preference
+  const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
+
+  // Load theme preference on mount
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const savedTheme = await AsyncStorage.getItem('fuelcal_theme');
+        if (savedTheme) setThemeMode(savedTheme as ThemeMode);
+      } catch (error) {
+        console.error('Error loading theme:', error);
+      }
+    };
+    loadTheme();
+  }, []);
+
+  // Save theme preference
+  useEffect(() => {
+    AsyncStorage.setItem('fuelcal_theme', themeMode);
+  }, [themeMode]);
+
+  // Determine if dark mode should be active
+  const isDark = themeMode === 'dark' || (themeMode === 'system' && systemColorScheme === 'dark');
+
+  // Cycle through theme modes
+  const toggleTheme = () => {
+    setThemeMode(prev => {
+      if (prev === 'dark') return 'light';
+      if (prev === 'light') return 'system';
+      return 'dark';
+    });
+  };
+
+  // Get theme icon
+  const getThemeIcon = () => {
+    if (themeMode === 'dark') return '⏾';
+    if (themeMode === 'light') return '☀︎';
+    return '⚙️';
+  };
 
   // Refs for input fields
   const kmRef = useRef<TextInput>(null);
@@ -199,16 +239,22 @@ export default function Index() {
             </View>
             <View style={styles.headerButtons}>
               <TouchableOpacity
+                style={[styles.iconButton, { backgroundColor: isDark ? '#2c2c2e' : '#f0f0f5' }]}
+                onPress={toggleTheme}
+              >
+                <Text style={styles.iconText}>{getThemeIcon()}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.iconButton, { backgroundColor: isDark ? '#2c2c2e' : '#f0f0f5' }]}
+                onPress={toggleCurrency}
+              >
+                <Text style={[styles.currencyText, textColor]}>{currencySymbol}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={[styles.clearButton, { backgroundColor: isDark ? '#2c2c2e' : '#f0f0f5' }]}
                 onPress={clearValues}
               >
                 <Text style={[styles.clearButtonText, labelColor]}>Clear</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.currencyButton, { backgroundColor: isDark ? '#2c2c2e' : '#f0f0f5' }]}
-                onPress={toggleCurrency}
-              >
-                <Text style={[styles.currencyText, textColor]}>{currencySymbol}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -401,6 +447,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  iconButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginTop: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 44,
+  },
+  iconText: {
+    fontSize: 18,
+  },
   clearButton: {
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -414,14 +472,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
-  currencyButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginTop: 8,
-  },
   currencyText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
   },
   card: {
